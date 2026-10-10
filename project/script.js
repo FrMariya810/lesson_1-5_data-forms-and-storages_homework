@@ -3,6 +3,7 @@
 
 console.log("Стартовый проект подключен")
 const STORAGE_KEY = "hw-5_music";
+const SESSION_KEY = "hw-5-music_temp";
 
 const form = document.querySelector(".card-form");
 const panels = {
@@ -26,6 +27,7 @@ function showState(name) {
   Object.entries(panels).forEach(([key, el]) => {
     el.hidden = key !== name;
   });
+  saveMode(name);
 }
 
 function renderCard(card) {
@@ -57,8 +59,27 @@ function removeFromStorage() {
   localStorage.removeItem(STORAGE_KEY);
 }
 
+function saveMode(name) {
+  sessionStorage.setItem(SESSION_KEY, name);
+}
+
+function loadMode() {
+  return sessionStorage.getItem(SESSION_KEY);
+}
+
+function clearMode() {
+  sessionStorage.removeItem(SESSION_KEY);
+}
+
 const savedCard = loadFromStorage();
-if (savedCard) {
+const savedMode = loadMode();
+if (savedMode === "editor") {
+  if (savedCard) {
+    currentCard = savedCard;
+    fillForm(savedCard);
+  }
+  showState("editor");
+} else if (savedCard) {
   currentCard = savedCard;
   renderCard(savedCard);
   showState("viewer");
@@ -105,7 +126,8 @@ editButton.addEventListener("click", () => {
 
 deleteButton.addEventListener("click", () => {
   currentCard = null;
-  removeFromStorage();  
+  removeFromStorage();
+  clearMode();  
   form.reset();
   showState("empty");
 });
