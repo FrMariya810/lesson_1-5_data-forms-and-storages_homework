@@ -37,14 +37,14 @@
         <header class="workspace__header">
           <div>
             <p class="workspace__kicker">Рабочая область</p>
-            <h2 class="workspace__title" id="workspace-title">Ваша тема</h2>
+            <h2 class="workspace__title" id="workspace-title">Музыкальный альбом</h2>
           </div>
 
           <p class="workspace__status" aria-live="polite">Данные еще не проверены</p>
         </header>
 
         <!-- Состояние 1: показывается, когда сохраненных данных нет. -->
-        <section class="app-state app-state--empty" data-state-panel="empty">
+        <section class="app-state app-state--empty" data-state-panel="empty" >
           <p class="app-state__index">01</p>
           <div class="app-state__content">
             <h3 class="app-state__title">Карточка пока не создана</h3>
@@ -59,7 +59,7 @@
         </section>
 
         <!-- Состояние 2: студент дополняет форму под выбранную тему. -->
-        <section class="app-state app-state--editor" data-state-panel="editor" hidden>
+        <section class="app-state app-state--editor" data-state-panel="editor" hidden >
           <p class="app-state__index">02</p>
 
           <form class="card-form">
@@ -71,19 +71,52 @@
               <p class="card-form__note">Добавьте еще минимум три осмысленных поля</p>
             </header>
 
-            <!-- Это один пример связки label, id и name. Остальные поля создайте сами. -->
             <div class="field">
-              <label class="field__label" for="card-title">Название</label>
+              <label class="field__label" for="card-title">Название альбома</label>
               <input
                 class="field__control"
                 id="card-title"
                 name="title"
                 type="text"
-                minlength="3"
-                placeholder="Например, Городской маршрут"
+                placeholder="Например, OK Computer"
                 required
               />
-              <span class="field__hint">Минимум 3 символа</span>
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="card-artist">Исполнитель</label>
+              <input
+                class="field__control"
+                id="card-artist"
+                name="artist"
+                type="text"
+                placeholder="Например, Radiohead"
+                required
+              />
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="card-year">Год выпуска</label>
+              <input
+                class="field__control"
+                id="card-year"
+                name="year"
+                type="number"
+                placeholder="1997"
+              />
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="card-rating">Оценка (1–10)</label>
+              <input
+                class="field__control"
+                id="card-rating"
+                name="rating"
+                type="range"
+                min="1"
+                max="10"
+                value="7"
+              />
             </div>
 
             <!-- Добавьте поля, которые описывают именно вашу тему. -->
