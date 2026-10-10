@@ -157,6 +157,15 @@ textarea {
   font-size: 0.85rem;
 }
 
+.workspace__notice {
+  margin: 0 0 16px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: #fff3cd;
+  color: #664d03;
+  font-size: 0.95rem;
+}
+
 .app-state {
   display: grid;
   grid-template-columns: 74px minmax(0, 1fr);

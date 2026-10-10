@@ -4,6 +4,7 @@
 console.log("Стартовый проект подключен")
 const STORAGE_KEY = "hw-5_music";
 const SESSION_KEY = "hw-5-music_temp";
+const LIFETIME_MS = 7 * 24 * 60 * 60 * 1000;
 
 const form = document.querySelector(".card-form");
 const panels = {
@@ -43,6 +44,23 @@ function loadCards() {
 }
 function makeId() {
   return String(Date.now());
+}
+
+
+function isExpired(card) {
+  if (!card.savedAt) return false;
+  return Date.now() - card.savedAt > LIFETIME_MS;
+}
+
+function showNotice(text) {
+  const el = document.querySelector("[data-notice]");
+  if (!el) return;
+  if (text) {
+    el.textContent = text;
+    el.hidden = false;
+  } else {
+    el.hidden = true;
+  }
 }
 
 function saveMode(name) {
@@ -125,7 +143,20 @@ function validateYears() {
   return true;
 }
 
-cards = loadCards();
+const raw = loadCards();
+const expiredCount = raw.filter(isExpired).length;
+cards = raw.filter((card) => !isExpired(card));
+
+if (expiredCount > 0) {
+  if (cards.length === 0) {
+    localStorage.removeItem(STORAGE_KEY);
+  } else {
+    saveCards();
+  }
+  showNotice(
+    `Устарело и удалено карточек: ${expiredCount}. Срок хранения - 7 дней.`
+  );
+}
 const saved = loadMode();
 
 if (cards.length === 0) {
@@ -186,17 +217,17 @@ form.addEventListener("submit", (event) => {
   };
 
   if (editingId) {
-    const index = cards.findIndex((c) => c.id === editingId);
-    if (index !== -1) {
-      cards[index] = { ...cards[index], ...data };
-      viewingId = editingId;
-    }
-    editingId = null;
-  } else {
-    const newCard = { id: makeId(), ...data };
-    cards.push(newCard);
-    viewingId = newCard.id;
+  const index = cards.findIndex((c) => c.id === editingId);
+  if (index !== -1) {
+    cards[index] = { ...cards[index], ...data, savedAt: Date.now() };
+    viewingId = editingId;
   }
+  editingId = null;
+} else {
+  const newCard = { id: makeId(), savedAt: Date.now(), ...data };
+  cards.push(newCard);
+  viewingId = newCard.id;
+}
 
   saveCards();
   renderList();
