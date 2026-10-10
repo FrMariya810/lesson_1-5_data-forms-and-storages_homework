@@ -237,6 +237,13 @@ textarea {
   outline-offset: 3px;
 }
 
+.card-list__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
 .card-form,
 .saved-card {
   width: 100%;

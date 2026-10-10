@@ -19,6 +19,9 @@ const cancelButton = document.querySelector('[data-action="cancel"]');
 const editButton = document.querySelector('[data-action="edit"]');
 const deleteButton = document.querySelector('[data-action="delete"]');
 const backToListButton = document.querySelector('[data-action="back-to-list"]');
+const exportButtons = document.querySelectorAll('[data-action="export"]');
+const importButtons = document.querySelectorAll('[data-action="import"]');
+const importInputs = document.querySelectorAll("[data-import-input]");
 
 const cardTitle = document.querySelector(".saved-card__title");
 const viewArtist = document.querySelector('[data-view="artist"]');
@@ -123,6 +126,76 @@ function fillForm(card) {
   form.elements.year.value = card.year;
   form.elements.founded.value = card.founded ?? "";
   form.elements.rating.value = card.rating;
+}
+
+function isValidCard(card) {
+  return (
+    card &&
+    typeof card === "object" &&
+    typeof card.id === "string" &&
+    typeof card.title === "string" &&
+    card.title.trim() !== "" &&
+    typeof card.artist === "string"
+  );
+}
+
+function exportCards() {
+  if (cards.length === 0) {
+    showNotice("Экспортировать нечего: карточек пока нет");
+    return;
+  }
+  const json = JSON.stringify(cards, null, 2);
+  const blob = new Blob([json], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "music-cards.json";
+  document.body.append(link);
+  link.click();
+  link.remove();
+
+  URL.revokeObjectURL(url);
+  showNotice(`Экспортировано карточек: ${cards.length}`);
+}
+
+function importCards(file) {
+  const reader = new FileReader();
+
+  reader.addEventListener("load", () => {
+    let parsed;
+    try {
+      parsed = JSON.parse(reader.result);
+    } catch {
+      showNotice("Не удалось прочитать файл: это не корректный JSON");
+      return;
+    }
+
+    if (!Array.isArray(parsed)) {
+      showNotice("Файл должен содержать массив карточек");
+      return;
+    }
+
+    const valid = parsed.filter(isValidCard);
+    if (valid.length === 0) {
+      showNotice("В файле не нашлось ни одной подходящей карточки");
+      return;
+    }
+
+    cards = valid;
+    viewingId = null;
+    editingId = null;
+    saveCards();
+    renderList();
+    showState("list");
+    showNotice(`Импортировано карточек: ${valid.length}`);
+  });
+
+  reader.addEventListener("error", () => {
+    showNotice("Не удалось прочитать файл");
+  });
+
+  reader.readAsText(file);
 }
 
 function validateYears() {
@@ -268,4 +341,19 @@ if (backToListButton) {
 
 form.addEventListener("input", () => {
   validateYears();
+});
+
+exportButtons.forEach((btn) => {
+  btn.addEventListener("click", exportCards);
+});
+
+importButtons.forEach((btn, i) => {
+  const input = importInputs[i];
+  if (!input) return;
+  btn.addEventListener("click", () => input.click());
+  input.addEventListener("change", () => {
+    const file = input.files && input.files[0];
+    if (file) importCards(file);
+    input.value = "";
+  });
 });
