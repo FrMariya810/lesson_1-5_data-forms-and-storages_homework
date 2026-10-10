@@ -43,6 +43,13 @@
           <p class="workspace__status" aria-live="polite">Данные еще не проверены</p>
         </header>
 
+        <p class="workspace__draft" data-draft hidden>
+          У вас есть незавершённый черновик.
+          <button class="button button--secondary" type="button" data-action="restore-draft">
+            Продолжить редактирование
+          </button>
+        </p>
+
         <!-- Состояние 1: показывается, когда сохраненных данных нет. -->
         <section class="app-state app-state--empty" data-state-panel="empty" >
           <p class="app-state__index">01</p>
@@ -58,9 +65,20 @@
           </div>
         </section>
 
+        <section class="app-state app-state--list" data-state-panel="list" hidden>
+          <p class="app-state__index">02</p>
+          <div class="app-state__content">
+            <h3 class="app-state__title">Мои карточки</h3>
+            <ul class="card-list" data-list></ul>
+            <button class="button button--primary" type="button" data-action="create">
+              Добавить карточку
+            </button>
+          </div>
+        </section>
+
         <!-- Состояние 2: студент дополняет форму под выбранную тему. -->
         <section class="app-state app-state--editor" data-state-panel="editor" hidden >
-          <p class="app-state__index">02</p>
+          <p class="app-state__index">03</p>
 
           <form class="card-form">
             <header class="card-form__header">
@@ -104,6 +122,18 @@
                 type="number"
                 placeholder="1997"
               />
+              <span class="field__error" data-error="year" hidden></span>
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="card-founded">Год основания</label>
+              <input
+                class="field__control"
+                id="card-founded"
+                name="founded"
+                type="number"
+                placeholder="1985"
+              />
             </div>
 
             <div class="field">
@@ -134,7 +164,7 @@
 
         <!-- Состояние 3: сюда нужно вывести все сохраненные значения. -->
         <section class="app-state app-state--viewer" data-state-panel="viewer" hidden>
-          <p class="app-state__index">03</p>
+          <p class="app-state__index">04</p>
 
           <article class="saved-card">
             <p class="saved-card__label">Сохраненная карточка</p>
@@ -150,6 +180,10 @@
                 <dd data-view="year"></dd>
               </div>
               <div class="saved-card__row">
+                <dt>Год основания</dt>
+                <dd data-view="founded"></dd>
+              </div>
+              <div class="saved-card__row">
                 <dt>Оценка</dt>
                 <dd data-view="rating"></dd>
               </div>
@@ -161,6 +195,9 @@
               </button>
               <button class="button button--danger" type="button" data-action="delete">
                 Удалить
+              </button>
+              <button class="button button--secondary" type="button" data-action="back-to-list">
+                К списку
               </button>
             </div>
           </article>

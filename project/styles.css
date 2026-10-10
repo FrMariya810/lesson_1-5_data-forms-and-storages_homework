@@ -195,6 +195,39 @@ textarea {
   line-height: 1.65;
 }
 
+.card-list {
+  width: 100%;
+  max-width: 520px;
+  margin: 0 0 28px;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+  list-style: none;
+}
+
+.card-list__open {
+  width: 100%;
+  min-height: 52px;
+  padding: 14px 18px;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid #b8c1cf;
+  text-align: left;
+  font-weight: 650;
+  cursor: pointer;
+  transition: border-color 150ms ease, color 150ms ease;
+}
+
+.card-list__open:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.card-list__open:focus-visible {
+  outline: 3px solid rgb(56 87 214 / 28%);
+  outline-offset: 3px;
+}
+
 .card-form,
 .saved-card {
   width: 100%;
@@ -258,6 +291,14 @@ textarea.field__control {
   color: var(--muted);
   font-size: 0.78rem;
   line-height: 1.45;
+}
+
+.field__error {
+  display: block;
+  margin-top: 4px;
+  color: var(--danger);
+  font-size: 0.8rem;
+  line-height: 1.4;
 }
 
 .card-form__actions,
