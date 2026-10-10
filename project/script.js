@@ -4,6 +4,58 @@
 console.log("Стартовый проект подключен")
 
 const form = document.querySelector(".card-form");
+const panels = {
+  empty: document.querySelector('[data-state-panel="empty"]'),
+  editor: document.querySelector('[data-state-panel="editor"]'),
+  viewer: document.querySelector('[data-state-panel="viewer"]'),
+};
+const createButton = document.querySelector('[data-action="create"]');
+const cancelButton = document.querySelector('[data-action="cancel"]');
+const editButton = document.querySelector('[data-action="edit"]');
+const deleteButton = document.querySelector('[data-action="delete"]');
+
+const cardTitle = document.querySelector(".saved-card__title");
+const viewArtist = document.querySelector('[data-view="artist"]');
+const viewYear = document.querySelector('[data-view="year"]');
+const viewRating = document.querySelector('[data-view="rating"]');
+
+let currentCard = null;
+
+function showState(name) {
+  Object.entries(panels).forEach(([key, el]) => {
+    el.hidden = key !== name;
+  });
+}
+
+function renderCard(card) {
+  cardTitle.textContent = card.title;
+  viewArtist.textContent = card.artist;
+  viewYear.textContent = card.year;
+  viewRating.textContent = card.rating;
+}
+
+function fillForm(card) {
+  form.elements.title.value = card.title;
+  form.elements.artist.value = card.artist;
+  form.elements.year.value = card.year;
+  form.elements.rating.value = card.rating;
+}
+
+showState("empty");
+
+createButton.addEventListener("click", () => {
+  form.reset();
+  showState("editor");
+  form.elements.title.focus();
+});
+
+cancelButton.addEventListener("click", () => {
+  if (currentCard) {
+    showState("viewer");
+  } else {
+    showState("empty");
+  }
+});
 
 form.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -15,6 +67,20 @@ form.addEventListener("submit", (event) => {
     year: formData.get("year"),
     rating: formData.get("rating"),
   };
+  currentCard = card;
+  renderCard(currentCard);
+  showState("viewer");
+});
 
-  console.log("Данные карточки:", card);
+editButton.addEventListener("click", () => {
+  if (currentCard) {
+    fillForm(currentCard);
+  }
+  showState("editor");
+});
+
+deleteButton.addEventListener("click", () => {
+  currentCard = null;
+  form.reset();
+  showState("empty");
 });
