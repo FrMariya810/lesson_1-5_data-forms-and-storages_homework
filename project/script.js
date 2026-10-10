@@ -2,6 +2,7 @@
 // Спроектируйте модель данных и переходы между состояниями самостоятельно.
 
 console.log("Стартовый проект подключен")
+const STORAGE_KEY = "hw-5_music";
 
 const form = document.querySelector(".card-form");
 const panels = {
@@ -41,7 +42,29 @@ function fillForm(card) {
   form.elements.rating.value = card.rating;
 }
 
-showState("empty");
+function saveToStorage(card) {
+  const cardJson = JSON.stringify(card);
+  localStorage.setItem(STORAGE_KEY, cardJson);
+}
+
+function loadFromStorage() {
+  const cardJson = localStorage.getItem(STORAGE_KEY);
+  if (!cardJson) return null;
+  return JSON.parse(cardJson);
+}
+
+function removeFromStorage() {
+  localStorage.removeItem(STORAGE_KEY);
+}
+
+const savedCard = loadFromStorage();
+if (savedCard) {
+  currentCard = savedCard;
+  renderCard(savedCard);
+  showState("viewer");
+} else {
+  showState("empty");
+}
 
 createButton.addEventListener("click", () => {
   form.reset();
@@ -68,6 +91,7 @@ form.addEventListener("submit", (event) => {
     rating: formData.get("rating"),
   };
   currentCard = card;
+  saveToStorage(card);
   renderCard(currentCard);
   showState("viewer");
 });
@@ -81,6 +105,7 @@ editButton.addEventListener("click", () => {
 
 deleteButton.addEventListener("click", () => {
   currentCard = null;
+  removeFromStorage();  
   form.reset();
   showState("empty");
 });
